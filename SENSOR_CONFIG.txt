@@ -1,0 +1,5 @@
+
+Profile: Profile.PROFILE_5
+Range Interval: [1.   1.05]
+Sweeps per frame: 512
+Accelerated average samples: 30
