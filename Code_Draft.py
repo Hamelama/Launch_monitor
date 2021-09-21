@@ -9,6 +9,7 @@ from PyQt5 import QtCore
 
 import acconeer.exptool as et
 
+import csv # For simple DB
 
 HALF_WAVELENGTH = 2.445e-3  # m
 HISTORY_LENGTH = 2.0  # s
@@ -72,19 +73,18 @@ def get_sensor_config():
 
 def write_configs(conf):
     # Sensor config
-    f_sensor_config = open('SENSOR_CONFIG.txt', 'w')
-    f_sensor_config.write('\n')
-    f_sensor_config.write('Profile: ')
-    f_sensor_config.write(str(conf.profile))
-    f_sensor_config.write('\n')
-    f_sensor_config.write('Range Interval: ')
-    f_sensor_config.write(str(conf.range_interval))
-    f_sensor_config.write('\n')
-    f_sensor_config.write('Sweeps per frame: ')
-    f_sensor_config.write(str(conf.sweeps_per_frame))
-    f_sensor_config.write('\n')
-    f_sensor_config.write('Accelerated average samples: ')
-    f_sensor_config.write(str(conf.hw_accelerated_average_samples))
+    config_data = [
+
+        ['Profile', conf.profile],
+        ['Range Interval', str(conf.range_interval[0]) + "-" + str(conf.range_interval[1])],
+        ['Sweeps per frame', conf.sweeps_per_frame],
+        ['Accelerated average samples', conf.hw_accelerated_average_samples]
+         ]
+
+    with open('sensor_conf.csv', 'w', newline = '') as csvfile:
+        my_writer = csv.writer(csvfile)
+        my_writer.writerows(input_var)
+        
 
 class ProcessingConfiguration(et.configbase.ProcessingConfig):
     VERSION = 6
