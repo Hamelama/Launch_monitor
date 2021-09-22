@@ -83,7 +83,7 @@ def write_configs(conf):
 
     with open('sensor_conf.csv', 'w', newline = '') as csvfile:
         my_writer = csv.writer(csvfile)
-        my_writer.writerows(input_var)
+        my_writer.writerows(config_data)
         
 
 class ProcessingConfiguration(et.configbase.ProcessingConfig):
