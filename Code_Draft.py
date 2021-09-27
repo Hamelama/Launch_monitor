@@ -45,23 +45,24 @@ def main():
 
     processor = Processor(sensor_config, processing_config, session_info)
     dataPoint_v_arr = []
+
     while not interrupt_handler.got_signal:
         info, data = client.get_next()
        
         plot_data = processor.process(data, info)
         velocity = plot_data["vel"]
         if velocity is not None:
-            velocity 2.236936*plot_data["vel"])
-        else
+            velocity =2.236936*plot_data["vel"]
+        else:
             velocity = 0
-
-        dataPoint_v_arr.append(velocity)
+        
+        dataPoint_v_arr.append([velocity])
         if plot_data is not None:
             try:
                 pg_process.put_data(plot_data)
             except et.PGProccessDiedException:
                 break
-
+    write_velocity(dataPoint_v_arr)
     print("\n Disconnecting...")
     print("Goodbye!")
     pg_process.close()
@@ -80,7 +81,10 @@ def get_sensor_config():
     return config
 
 def write_velocity(vels):
-    pass
+    with open('velocity_values.csv', 'w', newline = '') as csvfile:
+        my_writer = csv.writer(csvfile)
+        my_writer.writerows(vels)
+        
 
 def write_configs(conf):
     # Sensor config
