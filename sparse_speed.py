@@ -105,7 +105,7 @@ class ProcessingConfiguration(et.configbase.ProcessingConfig):
 
     min_speed = et.configbase.FloatParameter(
         label="Minimum speed",
-        unit="m/s",
+        unit="mph",
         default_value=0.5,
         limits=(0, 5),
         decimals=1,
