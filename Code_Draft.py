@@ -44,17 +44,18 @@ def main():
     print("Press Ctrl-C to end session")
 
     processor = Processor(sensor_config, processing_config, session_info)
-
+    dataPoint_v_arr = []
     while not interrupt_handler.got_signal:
         info, data = client.get_next()
        
         plot_data = processor.process(data, info)
         velocity = plot_data["vel"]
         if velocity is not None:
-            print(2.236936*plot_data["vel"])
+            velocity 2.236936*plot_data["vel"])
         else
-            print(0)
-        
+            velocity = 0
+
+        dataPoint_v_arr.append(velocity)
         if plot_data is not None:
             try:
                 pg_process.put_data(plot_data)
@@ -77,6 +78,9 @@ def get_sensor_config():
     config.hw_accelerated_average_samples = 30
     # Frame update rate? 
     return config
+
+def write_velocity(vels):
+    pass
 
 def write_configs(conf):
     # Sensor config
