@@ -7,8 +7,9 @@ dataPoints = []
 with open('velocity_values.csv') as csvfile:
     csvReader = csv.reader(csvfile)
     i = 0
-    for velocity in csvfile:
-        velocities.append(float(velocity))
+    for row in csvReader:
+        # the first element in the row, row[0] is velocity
+        velocities.append(float(row[0]))
         
         dataPoints.append(i)
         i = i + 1
