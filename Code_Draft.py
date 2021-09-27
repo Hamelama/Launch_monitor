@@ -18,7 +18,7 @@ SD_HISTORY_LENGTH = HISTORY_LENGTH  # s
 NUM_SAVED_SEQUENCES = 100
 SEQUENCE_TIMEOUT_LENGTH = 0.5  # s
 
-
+# Byt till mph från /s (ty i golf används mph)
 def main():
     args = et.utils.ExampleArgumentParser(num_sens=1).parse_args()
     et.utils.config_logging(args)
@@ -47,8 +47,14 @@ def main():
 
     while not interrupt_handler.got_signal:
         info, data = client.get_next()
+       
         plot_data = processor.process(data, info)
-
+        velocity = plot_data["vel"]
+        if velocity is not None:
+            print(2.236936*plot_data["vel"])
+        else
+            print(0)
+        
         if plot_data is not None:
             try:
                 pg_process.put_data(plot_data)
@@ -69,6 +75,7 @@ def get_sensor_config():
     config.downsampling_factor = 3
     config.sweeps_per_frame = 512
     config.hw_accelerated_average_samples = 30
+    # Frame update rate? 
     return config
 
 def write_configs(conf):
@@ -164,7 +171,7 @@ class ProcessingConfiguration(et.configbase.ProcessingConfig):
 
     shown_speed_unit = et.configbase.EnumParameter(
         label="Speed unit",
-        default_value=SpeedUnit.METER_PER_SECOND,
+        default_value=SpeedUnit.MILES_PER_HOUR,
         enum=SpeedUnit,
         updateable=True,
         order=100,
@@ -415,7 +422,7 @@ class Processor:
         temporal_max_threshold = self.threshold
 
         self.update_idx += 1
-
+        
         return {
             "frame": frame,
             "nasd": nasd,

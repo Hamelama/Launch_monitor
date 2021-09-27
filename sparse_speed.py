@@ -151,7 +151,7 @@ class ProcessingConfiguration(et.configbase.ProcessingConfig):
 
     shown_speed_unit = et.configbase.EnumParameter(
         label="Speed unit",
-        default_value=SpeedUnit.METER_PER_SECOND,
+        default_value=SpeedUnit.MILES_PER_HOUR,
         enum=SpeedUnit,
         updateable=True,
         order=100,
