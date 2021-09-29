@@ -73,7 +73,7 @@ def get_sensor_config():
     config = et.configs.SparseServiceConfig()
     config.profile = et.configs.SparseServiceConfig.Profile.PROFILE_5
     config.sampling_mode = et.configs.SparseServiceConfig.SamplingMode.A
-    config.range_interval = [1.0, 1.05]
+    config.range_interval = [0.7, 1.3]
     config.downsampling_factor = 3
     config.sweeps_per_frame = 512
     config.hw_accelerated_average_samples = 30

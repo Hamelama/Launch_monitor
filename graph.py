@@ -16,6 +16,9 @@ with open('velocity_values.csv') as csvfile:
 
         
 plt.plot(dataPoints, velocities)
+plt.xlabel('Data points')
+plt.ylabel('Speed (mph)')
+plt.title('Test 1 - Simulated golf club 0.7 - 1.3')
 plt.show()
 
 
