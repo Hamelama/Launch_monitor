@@ -81,6 +81,7 @@ def get_sensor_config():
     return config
 
 def write_velocity(vels):
+    # TODO - change name to speed!
     with open('velocity_values.csv', 'w', newline = '') as csvfile:
         my_writer = csv.writer(csvfile)
         my_writer.writerows(vels)

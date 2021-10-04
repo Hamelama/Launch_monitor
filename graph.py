@@ -1,7 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
 
-velocities = []
+speed_values = []
 dataPoints = []
 
 with open('velocity_values.csv') as csvfile:
@@ -9,22 +9,30 @@ with open('velocity_values.csv') as csvfile:
     i = 0
     for row in csvReader:
         # the first element in the row, row[0] is velocity
-        velocities.append(float(row[0]))
+        speed_values.append(float(row[0]))
         
         dataPoints.append(i)
         i = i + 1
 
         
-plt.plot(dataPoints, velocities)
+plt.plot(dataPoints, speed_values)
+
 plt.xlabel('Data points')
 plt.ylabel('Speed (mph)')
-plt.title('Test 1 - Simulated golf club 0.7 - 1.3')
+plt.title('Test 1 - Simulated golf club, Range 0.7m - 1.3m')
+
 plt.show()
 
+max_speed = max(speed_values)
 
-max_velocity = max(velocities)
-fig, ax  = plt.subplots()
 
-ax.bar([1], [max_velocity], width=0.35,
-       tick_label=['Maxhastighet'], align='center')
+cells = []
+cells.append(["Maximum Speed", str(round(max_speed, 2)) + " mph"])
+table = plt.table(cellText=cells, cellLoc='right', loc = "center")
+table.scale(1,6)
+table.set_fontsize(24)
+
+
+plt.axis('off') # No axes are needed for a table
+plt.title("Results", fontdict = {'fontsize': 24}, y=0.7)
 plt.show()
