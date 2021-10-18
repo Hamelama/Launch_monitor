@@ -19,7 +19,7 @@ plt.plot(dataPoints, speed_values)
 
 plt.xlabel('Data points')
 plt.ylabel('Speed (mph)')
-plt.title('Test 1 - Simulated golf club, Range 0.7m - 1.3m')
+plt.title('Test 2 - Golf club, Range 0.9m - 1m')
 
 plt.show()
 

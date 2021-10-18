@@ -15,7 +15,7 @@ HALF_WAVELENGTH = 2.445e-3  # m
 HISTORY_LENGTH = 2.0  # s
 EST_VEL_HISTORY_LENGTH = HISTORY_LENGTH  # s
 SD_HISTORY_LENGTH = HISTORY_LENGTH  # s
-NUM_SAVED_SEQUENCES = 100
+NUM_SAVED_SEQUENCES = 1000
 SEQUENCE_TIMEOUT_LENGTH = 0.5  # s
 
 # Byt till mph från /s (ty i golf används mph)
@@ -44,6 +44,7 @@ def main():
     print("Press Ctrl-C to end session")
 
     processor = Processor(sensor_config, processing_config, session_info)
+
     dataPoint_v_arr = []
 
     while not interrupt_handler.got_signal:
@@ -51,8 +52,9 @@ def main():
        
         plot_data = processor.process(data, info)
         velocity = plot_data["vel"]
+
         if velocity is not None:
-            velocity =2.236936*plot_data["vel"]
+            velocity = 2.24 * plot_data["vel"]
         else:
             velocity = 0
         
@@ -73,7 +75,7 @@ def get_sensor_config():
     config = et.configs.SparseServiceConfig()
     config.profile = et.configs.SparseServiceConfig.Profile.PROFILE_5
     config.sampling_mode = et.configs.SparseServiceConfig.SamplingMode.A
-    config.range_interval = [0.7, 1.3]
+    config.range_interval = [0.9, 1]
     config.downsampling_factor = 3
     config.sweeps_per_frame = 512
     config.hw_accelerated_average_samples = 30
