@@ -15,7 +15,7 @@ HALF_WAVELENGTH = 2.445e-3  # m
 HISTORY_LENGTH = 2.0  # s
 EST_VEL_HISTORY_LENGTH = HISTORY_LENGTH  # s
 SD_HISTORY_LENGTH = HISTORY_LENGTH  # s
-NUM_SAVED_SEQUENCES = 1000
+NUM_SAVED_SEQUENCES = 100
 SEQUENCE_TIMEOUT_LENGTH = 0.5  # s
 
 # Byt till mph från /s (ty i golf används mph)
@@ -46,36 +46,44 @@ def main():
     processor = Processor(sensor_config, processing_config, session_info)
 
     dataPoint_v_arr = []
-
+   
     while not interrupt_handler.got_signal:
         info, data = client.get_next()
        
         plot_data = processor.process(data, info)
-        velocity = plot_data["vel"]
-
-        if velocity is not None:
-            velocity = 2.24 * plot_data["vel"]
-        else:
-            velocity = 0
+        #vel_history är en lista över de senast uppmätta hastigheterna
+        #vel är endast maxhastigheten från de senast uppmätta hastigheterna
+        # vel = output_vel = np.nanmax(self.est_vel_history) (Processor.process)
         
-        dataPoint_v_arr.append([velocity])
+        history = plot_data["vel_history"]
+        for i in history:
+            
+            if np.isnan(i):
+                i = 0
+            dataPoint_v_arr.append([i]) 
+        
+        
         if plot_data is not None:
             try:
                 pg_process.put_data(plot_data)
             except et.PGProccessDiedException:
                 break
-    write_velocity(dataPoint_v_arr)
+    
+
+    
     print("\n Disconnecting...")
     print("Goodbye!")
     pg_process.close()
     client.disconnect()
-
+  
+   
+    write_velocity(dataPoint_v_arr)
 
 def get_sensor_config():
     config = et.configs.SparseServiceConfig()
     config.profile = et.configs.SparseServiceConfig.Profile.PROFILE_5
     config.sampling_mode = et.configs.SparseServiceConfig.SamplingMode.A
-    config.range_interval = [0.9, 1]
+    config.range_interval = [0.7, 1]
     config.downsampling_factor = 3
     config.sweeps_per_frame = 512
     config.hw_accelerated_average_samples = 30
@@ -84,15 +92,18 @@ def get_sensor_config():
 
 def write_velocity(vels):
     # TODO - change name to speed!
+    
     with open('velocity_values.csv', 'w', newline = '') as csvfile:
         my_writer = csv.writer(csvfile)
         my_writer.writerows(vels)
         
 
 def write_configs(conf):
+    
+
     # Sensor config
     config_data = [
-
+        
         ['Profile', conf.profile],
         ['Range Interval', str(conf.range_interval[0]) + "-" + str(conf.range_interval[1])],
         ['Sweeps per frame', conf.sweeps_per_frame],
@@ -430,7 +441,7 @@ class Processor:
 
         nasd_temporal_max = np.max(self.nasd_history, axis=0)
 
-        temporal_max_threshold = self.threshold
+        temporal_max_threshold = self.threshold  
 
         self.update_idx += 1
         
@@ -600,7 +611,7 @@ class PGUpdater:
         # Spectral density plot
 
         psd_db = 20 * np.log10(data["nasd_temporal_max"])
-        psd_threshold_db = 20 * np.log10(data["temporal_max_threshold"])
+        psd_threshold_db = 10 * np.log10(data["temporal_max_threshold"]) 
         m = self.smooth_max.update(max(2 * psd_threshold_db, np.max(psd_db)))
         self.sd_plot.setYRange(0, m)
         self.sd_curve.setData(self.bin_vs * self.unit.scale, psd_db)
